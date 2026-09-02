@@ -9,6 +9,7 @@ android {
 dependencies {
     api(project(":core:core-common"))
     api(project(":core:core-analytics"))
+    api(project(":core:core-datastore"))
     api(libs.junit4)
     api(libs.kotlinx.coroutines.test)
     api(libs.mockk)

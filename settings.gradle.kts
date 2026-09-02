@@ -29,6 +29,7 @@ include(":core:core-database")
 include(":core:core-datastore")
 include(":core:core-logging")
 include(":core:core-analytics")
+include(":core:core-tracking")
 include(":core:core-common")
 include(":core:core-testing")
 

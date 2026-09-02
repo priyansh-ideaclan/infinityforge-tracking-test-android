@@ -112,6 +112,7 @@ dependencies {
     implementation(project(":core:core-datastore"))
     implementation(project(":core:core-logging"))
     implementation(project(":core:core-analytics"))
+    implementation(project(":core:core-tracking"))
     implementation(project(":core:core-common"))
 
     implementation(project(":feature:feature-home"))

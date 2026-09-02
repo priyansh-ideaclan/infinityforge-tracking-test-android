@@ -20,6 +20,7 @@ core_modules:
   - core-datastore
   - core-logging
   - core-analytics
+  - core-tracking
   - core-common
   - core-testing
 

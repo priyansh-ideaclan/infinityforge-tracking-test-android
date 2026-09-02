@@ -16,7 +16,8 @@ index assumes.
 | `core-database` | Room setup (`FactoryDatabase`, `DatabaseModule`) and the example `NoteEntity`/`NoteDao`. | `FactoryDatabase`, `NoteDao`, `NoteEntity`, `DatabaseName` | — |
 | `core-datastore` | Typed `PreferencesDataSource` over `DataStore<Preferences>`, plus the canonical `PreferenceKeys`. | `PreferencesDataSource`, `PreferenceKeys` | — |
 | `core-analytics` | `AnalyticsTracker`/`CrashReporter` boundaries, typed `AnalyticsEvent`s, Firebase + NoOp implementations, `AnalyticsModule` (selects between them). | `AnalyticsTracker`, `CrashReporter`, `AnalyticsEvent`, `FirebaseAnalyticsTracker`, `NoOpAnalyticsTracker` | — |
-| `core-testing` | `testImplementation`/`androidTestImplementation`-only fakes: `FakeClock`, `FakeIdGenerator`, `FakeFeatureFlagProvider`, `FakeAnalyticsTracker`, `FakeDispatcherProvider`, `MainDispatcherRule`. | (all of the above) | Any `main` source set — this module must never ship in a release artifact. |
+| `core-tracking` | The InfinityForge Tracking Contract implementation (infinityforge-tracking-module) — a separate, contract-conformant capability from `core-analytics`'s own closed taxonomy (see Docs/INFINITYFORGE_TRACKING.md). `InfinityForgeTrackingClient`, canonical event/metric catalogs + validation, identity persistence, envelope/metadata generation, the provider boundary, and a Firebase provider + mapping. `TrackingModule` (Hilt selection). | `InfinityForgeTrackingClient`, `NoOpInfinityForgeTrackingClient`, `InfinityForgeEvent`, `InfinityForgeMetric`, `InfinityForgeTrackingProvider` | — |
+| `core-testing` | `testImplementation`/`androidTestImplementation`-only fakes: `FakeClock`, `FakeIdGenerator`, `FakeFeatureFlagProvider`, `FakeAnalyticsTracker`, `FakeDispatcherProvider`, `FakePreferencesDataSource`, `MainDispatcherRule`. | (all of the above) | Any `main` source set — this module must never ship in a release artifact. |
 
 ## ads/ and purchases/
 
@@ -39,8 +40,10 @@ index assumes.
 ## app/
 
 The composition root — the only module allowed to depend on everything. Owns
-`FactoryApplication` (Hilt entry point, conditional Firebase/AdMob/RevenueCat init),
-`MainActivity` + `FactoryNavHost` (composes every feature's nav graph), `AppModule` +
-`CoreBindingsModule` (every Hilt `@Provides`/`@Binds` that reads `BuildConfig` or picks a
-default implementation for a `core-*` interface), and `AppSpecFlags` (the
-machine-managed mirror of `APP_SPEC.yaml`'s capability toggles).
+`FactoryApplication` (Hilt entry point, conditional Firebase/AdMob/RevenueCat init, and
+a fire-and-forget `InfinityForgeTrackingClient.initialize()` call — see
+Docs/INFINITYFORGE_TRACKING.md), `MainActivity` + `FactoryNavHost` (composes every
+feature's nav graph), `AppModule` + `CoreBindingsModule` (every Hilt
+`@Provides`/`@Binds` that reads `BuildConfig` or picks a default implementation for a
+`core-*` interface), and `AppSpecFlags` (the machine-managed mirror of
+`APP_SPEC.yaml`'s capability toggles).

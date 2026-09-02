@@ -31,6 +31,16 @@ object PreferenceKeys {
     val THEME_MODE = stringPreferencesKey("theme_mode")
     val DYNAMIC_COLOR_ENABLED = booleanPreferencesKey("dynamic_color_enabled")
     val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+
+    // InfinityForge Tracking identity (specification/identity.md), owned by
+    // core-tracking's InfinityForgeIdentity. Kept here, not in core-tracking itself,
+    // matching this file's own rule: exactly one preferencesDataStore-backed key
+    // registry for the whole app. An empty string is this trio's "absent" sentinel
+    // (identify() already rejects an empty user_id, so it can never mean "identified
+    // with a blank id"; user properties default to "" meaning "no persisted JSON yet").
+    val TRACKING_ANONYMOUS_ID = stringPreferencesKey("infinityforge_tracking_anonymous_id")
+    val TRACKING_USER_ID = stringPreferencesKey("infinityforge_tracking_user_id")
+    val TRACKING_USER_PROPERTIES = stringPreferencesKey("infinityforge_tracking_user_properties")
 }
 
 /**

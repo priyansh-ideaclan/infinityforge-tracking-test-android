@@ -1,14 +1,19 @@
 package com.ideaclan.infinityforgetrackingtestkotlin
 
 import android.app.Application
+import com.factory.core.common.DispatcherProvider
 import com.factory.core.common.FeatureFlag
 import com.factory.core.common.FeatureFlagProvider
 import com.factory.core.logging.Logger
+import com.factory.core.tracking.InfinityForgeTrackingClient
 import com.google.android.gms.ads.MobileAds
 import com.revenuecat.purchases.LogLevel
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
 import dagger.hilt.android.HiltAndroidApp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "FactoryApplication"
@@ -20,10 +25,32 @@ class FactoryApplication : Application() {
 
     @Inject lateinit var logger: Logger
 
+    @Inject lateinit var infinityForgeTracking: InfinityForgeTrackingClient
+
+    @Inject lateinit var dispatcherProvider: DispatcherProvider
+
     override fun onCreate() {
         super.onCreate()
         initializeAdsIfEnabled()
         initializePurchasesIfConfigured()
+        initializeInfinityForgeTracking()
+    }
+
+    /**
+     * `InfinityForgeTrackingClient.initialize()` is `suspend` (it hydrates persisted
+     * identity — see `InfinityForgeIdentity`) and, per specification/api.md, must
+     * never block a user-facing action — so it is launched fire-and-forget on its own
+     * short-lived scope here, exactly like the reference Swift implementation's
+     * `AppLifecycleCoordinator` awaiting it inside an already-async lifecycle method,
+     * and the reference RN implementation's own app-root effect. This factory has no
+     * existing app-wide `CoroutineScope` to reuse (see `DispatcherProvider`'s own doc
+     * comment on why a raw `Dispatchers.*` is never referenced directly), so a local
+     * one is created here rather than inventing a new shared DI primitive for it.
+     */
+    private fun initializeInfinityForgeTracking() {
+        CoroutineScope(SupervisorJob() + dispatcherProvider.default).launch {
+            infinityForgeTracking.initialize()
+        }
     }
 
     private fun initializeAdsIfEnabled() {
