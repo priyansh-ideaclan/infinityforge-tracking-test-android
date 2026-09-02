@@ -1,0 +1,38 @@
+# Factory Detekt overrides. buildUponDefaultConfig = true (see build-logic
+# FactoryLintConventionPlugin), so only deltas from Detekt's default ruleset go here.
+# Do not disable a rule just to silence a real finding — fix the code, or add a narrow,
+# commented suppression at the call site instead (see AGENTS.md §8).
+
+style:
+  MagicNumber:
+    active: false # too noisy for UI dimension/padding literals in Compose code
+  ReturnCount:
+    active: true
+    max: 4
+
+complexity:
+  LongMethod:
+    active: true
+    threshold: 80
+  TooManyFunctions:
+    active: true
+    thresholdInClasses: 20
+  LongParameterList:
+    active: true
+    # Stateless, hoisted-state Composable screens (uiState + one callback per user
+    # action) routinely exceed the default of 6 without being genuinely complex —
+    # this is the standard Compose "state hoisting" shape, not a design smell.
+    functionThreshold: 10
+    constructorThreshold: 8
+
+naming:
+  FunctionNaming:
+    active: true
+    # allow PascalCase for @Composable functions
+    functionPattern: '^([a-z][a-zA-Z0-9]*)|([A-Z][a-zA-Z0-9]*)$'
+
+comments:
+  UndocumentedPublicClass:
+    active: false
+  UndocumentedPublicFunction:
+    active: false

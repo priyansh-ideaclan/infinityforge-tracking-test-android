@@ -1,0 +1,35 @@
+# Build outputs
+build/
+.gradle/
+*/build/
+**/build/
+captures/
+.cxx/
+
+# Local machine config — never commit these
+local.properties
+*.keystore
+*.jks
+keystore.properties
+
+# Real Firebase config per environment — never invented, never committed (see
+# Docs/setup/firebase.md). configure_app.py copies a real one in locally.
+app/google-services.json
+app/src/*/google-services.json
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Python (factory automation scripts)
+scripts/__pycache__/
+scripts/**/__pycache__/
+*.pyc
+.venv/
+.venv-test/
+
+# Test/lint/coverage output
+*.hprof
+/build/reports/

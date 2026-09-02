@@ -1,0 +1,83 @@
+# MODULES.yaml — reusable capability catalog (engineering-owned, not per-app product config)
+#
+# This file describes what the factory *can* build with, and which APP_SPEC.yaml fields
+# turn each optional capability on *at runtime*. All modules listed here (core, optional,
+# and feature) are always included in settings.gradle.kts and always built — see
+# ARCHITECTURE.md's "Gradle structure" section for why Gradle-level module exclusion was
+# tried and dropped. scripts/validate_spec.py and scripts/configure_app.py read this file
+# to know which APP_SPEC.yaml path controls which capability, and which concrete
+# implementation class a Hilt `@Provides` function should select for it.
+
+factory_modules_version: "1.0.0"
+
+# Always included, regardless of APP_SPEC.yaml. These have no "off" switch because
+# removing them would break the app shell itself.
+core_modules:
+  - core-designsystem
+  - core-navigation
+  - core-network
+  - core-database
+  - core-datastore
+  - core-logging
+  - core-analytics
+  - core-common
+  - core-testing
+
+# Toggled by a specific APP_SPEC.yaml path. `implementations` lists the concrete
+# boundary implementation selected per environment; feature code only ever depends on
+# the `*-api` module or the app-owned repository interface, never the implementation
+# module directly.
+optional_modules:
+  auth:
+    controlled_by: "auth.enabled"
+    modules:
+      - feature-auth
+    implementations:
+      firebase: FirebaseAuthRepository
+      fake: FakeAuthRepository
+  ads:
+    controlled_by: "ads.enabled"
+    modules:
+      - ads-api
+      - ads-admob
+    implementations:
+      admob: AdMobAdsController
+      fake: FakeAdsController
+  purchases:
+    controlled_by: "purchases.enabled"
+    modules:
+      - purchases-api
+      - purchases-revenuecat
+    implementations:
+      revenuecat: RevenueCatPurchasesController
+      fake: FakePurchasesController
+  onboarding:
+    controlled_by: "onboarding.enabled"
+    modules:
+      - feature-onboarding
+
+# Always included feature modules that demonstrate the core modules end-to-end.
+feature_modules:
+  - feature-home
+  - feature-settings
+
+# Representative module-combination matrix used by CI/tests (see Docs/testing/module-matrix.md).
+# Full combinatorial coverage of every optional_modules permutation is out of scope for
+# V1 (recorded honestly in the plan); these four combinations are verified.
+verified_combinations:
+  - name: minimal
+    auth: false
+    ads: false
+    purchases: false
+  - name: auth_and_ads
+    auth: true
+    ads: true
+    purchases: false
+  - name: auth_and_purchases
+    auth: true
+    ads: false
+    purchases: true
+  - name: full_v1
+    auth: true
+    ads: true
+    purchases: true

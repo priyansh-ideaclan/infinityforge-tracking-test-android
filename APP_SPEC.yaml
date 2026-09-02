@@ -1,0 +1,106 @@
+# APP_SPEC.yaml — Product Spec (source of truth for a *specific app* built from this factory)
+#
+# This file is application configuration, not engineering standards. Engineering
+# standards (versions, lint rules, CI) live in build-logic/, gradle/libs.versions.toml
+# and .github/workflows/ — do not add them here.
+#
+# Run: python scripts/configure_app.py APP_SPEC.yaml
+# Validate only (no changes): python scripts/validate_spec.py APP_SPEC.yaml
+
+factory:
+  # Must match (or be compatible with) factory-version.txt of the factory this spec
+  # was authored against. configure_app.py warns on mismatch, does not silently upgrade.
+  source_version: "1.0.0"
+
+app:
+  name: "InfinityForge Tracking Test"
+  # Reverse-DNS package name. Renaming this after first configure requires
+  # scripts/rename_package.py (not a manual find/replace).
+  package_name: "com.ideaclan.infinityforgetrackingtestkotlin"
+  version_name: "0.1.0"
+  version_code: 1
+
+branding:
+  primary_color: "#6750A4"
+  secondary_color: "#625B71"
+  tertiary_color: "#7D5260"
+  # Optional path (relative to repo root) to a logo/icon source asset. Null = use the
+  # factory's placeholder launcher icon.
+  logo_asset: null
+
+environments:
+  dev:
+    application_id_suffix: ".dev"
+    base_url: "https://dev.api.example.com/"
+    google_services_json: "app/src/dev/google-services.json"
+  staging:
+    application_id_suffix: ".staging"
+    base_url: "https://staging.api.example.com/"
+    google_services_json: "app/src/staging/google-services.json"
+  prod:
+    application_id_suffix: ""
+    base_url: "https://api.example.com/"
+    google_services_json: "app/src/prod/google-services.json"
+
+onboarding:
+  enabled: true
+  steps:
+    - id: welcome
+      title: "Welcome"
+      body: "Introduce your product in one sentence."
+    - id: value_prop
+      title: "What you can do"
+      body: "Describe the core value in one sentence."
+
+auth:
+  # Master switch. When false, feature-auth is excluded and the app boots straight
+  # into the signed-out/home experience (see MODULES.yaml auth entry).
+  enabled: false
+  providers:
+    email_password: false
+    google: false
+    anonymous: false
+
+analytics:
+  enabled: true
+  # firebase = real Firebase Analytics; fake = FakeAnalyticsTracker only (no network
+  # calls, useful for CI/offline development).
+  provider: firebase
+
+crash_reporting:
+  enabled: true
+  provider: firebase_crashlytics
+
+ads:
+  enabled: false
+  provider: admob
+  placements:
+    banner_home:
+      format: banner
+    interstitial_transition:
+      format: interstitial
+    rewarded_bonus:
+      format: rewarded
+    app_open_launch:
+      format: app_open
+
+purchases:
+  enabled: false
+  provider: revenuecat
+  premium_entitlement_id: "premium"
+
+room:
+  database_name: "infinityforge_tracking_test.db"
+  export_schema: true
+
+networking:
+  base_url: "https://api.example.com/"
+  connect_timeout_seconds: 30
+  read_timeout_seconds: 30
+  enable_logging_in_debug: true
+
+# Placeholder for a later factory version. No implementation ships in V1 — present so
+# the schema is stable for apps that will need it soon; validate_spec.py accepts only
+# `enabled: false` for this block in V1 and rejects any other key under it.
+notifications:
+  enabled: false

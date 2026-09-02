@@ -1,0 +1,105 @@
+name: Pull Request Verification
+
+# Mirrors ./scripts/verify.sh's non-device steps. Deliberately requires zero production
+# secrets (no Firebase/RevenueCat/AdMob/signing credentials) — see AGENTS.md and
+# Docs/testing/README.md for why: this factory must be verifiable by anyone who clones
+# it, with no external account setup.
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pr-verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK 36/37 platforms and build-tools
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36" "platforms;android-37.1" \
+            "build-tools;36.1.0" "build-tools;37.0.0"
+
+      - name: Cache Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install Python dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Validate APP_SPEC.yaml
+        run: python scripts/validate_spec.py APP_SPEC.yaml
+
+      - name: Check repository matches APP_SPEC.yaml
+        run: |
+          python scripts/verify_project.py APP_SPEC.yaml
+          code=$?
+          # 0 = fully clean, 2 = matches but external config (e.g. google-services.json)
+          # is missing, which is expected in CI — only a real code 1 (drift) fails.
+          if [ "$code" -eq 1 ]; then exit 1; fi
+
+      - name: Release-readiness scan (informational — missing credentials expected)
+        run: python scripts/release_check.py APP_SPEC.yaml || true
+
+      - name: No secret-shaped files committed
+        run: |
+          ! git ls-files | grep -E '\.(jks|keystore)$|keystore\.properties$|google-services\.json$|^local\.properties$'
+
+      - name: ktlint
+        run: ./gradlew ktlintCheck --no-daemon
+
+      - name: Detekt
+        run: ./gradlew detekt --no-daemon
+
+      - name: Android Lint (prodDebug)
+        run: ./gradlew :app:lintProdDebug --no-daemon
+
+      - name: Unit tests (Kotlin)
+        run: ./gradlew testDebugUnitTest --no-daemon
+
+      - name: Unit tests (Python factory scripts)
+        run: python -m unittest discover -s scripts/tests -v
+
+      - name: Debug build
+        run: ./gradlew :app:assembleProdDebug --no-daemon
+
+      - name: Release compilation (unsigned — no signing credentials required)
+        run: ./gradlew :app:assembleProdRelease --no-daemon
+
+      - name: Upload debug APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-prod-debug
+          path: app/build/outputs/apk/prod/debug/*.apk
+          if-no-files-found: ignore
+
+      - name: Upload lint/detekt reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-reports
+          path: |
+            app/build/reports/lint-results-prodDebug.html
+            **/build/reports/detekt/
+          if-no-files-found: ignore

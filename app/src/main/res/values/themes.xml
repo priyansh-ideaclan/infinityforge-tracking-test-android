@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Compose owns all real theming (see core-designsystem FactoryTheme). This XML theme
+      only needs to satisfy the platform's window-level requirements (status bar,
+      splash background) before the first Compose frame draws.
+    -->
+    <style name="Theme.Factory" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/ic_launcher_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+</resources>
