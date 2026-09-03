@@ -1,12 +1,12 @@
 package com.factory.core.tracking.firebase
 
+import android.os.Bundle
 import com.factory.core.logging.Logger
 import com.factory.core.tracking.InfinityForgeEnvironment
 import com.factory.core.tracking.InfinityForgeEventEnvelope
 import com.factory.core.tracking.InfinityForgeMetricEnvelope
 import com.factory.core.tracking.InfinityForgePropertyValue
 import com.factory.core.tracking.InfinityForgeTrackingProvider
-import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 
 private const val TAG = "InfinityForgeTracking"

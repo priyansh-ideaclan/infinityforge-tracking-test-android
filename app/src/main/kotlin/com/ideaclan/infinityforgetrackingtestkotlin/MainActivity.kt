@@ -10,11 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.factory.ads.api.BannerAdRenderer
-import com.ideaclan.infinityforgetrackingtestkotlin.ui.FactoryNavHost
-import com.ideaclan.infinityforgetrackingtestkotlin.ui.MainActivityViewModel
 import com.factory.core.designsystem.component.FactoryLoadingIndicator
 import com.factory.core.designsystem.theme.FactoryTheme
 import com.factory.core.navigation.FactoryNavigator
+import com.ideaclan.infinityforgetrackingtestkotlin.ui.FactoryNavHost
+import com.ideaclan.infinityforgetrackingtestkotlin.ui.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

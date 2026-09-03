@@ -1,2 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Required by FirebaseAnalytics.getInstance() (see TrackingModule.kt, which wires
+      FirebaseInfinityForgeProvider). Declared here, not only at the app level, so this
+      library is self-contained regarding the permissions its own code depends on —
+      merges harmlessly with the app manifest's own (identical) declarations. Mirrors
+      the same convention applied to core-analytics/ads-admob for the same reason.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+</manifest>

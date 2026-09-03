@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Required by AdView.loadAd() (see AdMobBannerRenderer.kt). Declared here, not
+      only at the app level, so this library is self-contained regarding the
+      permissions its own code depends on — merges harmlessly with the app
+      manifest's own (identical) declaration.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+</manifest>

@@ -10,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import javax.inject.Inject
@@ -174,7 +175,7 @@ class InfinityForgeIdentity @Inject constructor(
 
     private fun encodeUserProperties(properties: Map<String, InfinityForgePropertyValue>): String? = try {
         Json.encodeToString(JsonObject.serializer(), JsonObject(properties.mapValues { it.value.toJsonElement() }))
-    } catch (error: Exception) {
+    } catch (error: SerializationException) {
         logger.warn(TAG, "InfinityForge Tracking: failed to encode user properties.", error)
         null
     }
@@ -183,7 +184,7 @@ class InfinityForgeIdentity @Inject constructor(
         Json.decodeFromString(JsonObject.serializer(), encoded)
             .mapNotNull { (key, element) -> element.toPropertyValueOrNull()?.let { key to it } }
             .toMap()
-    } catch (error: Exception) {
+    } catch (error: SerializationException) {
         logger.warn(
             TAG,
             "InfinityForge Tracking: persisted user properties were unreadable; using an empty set.",

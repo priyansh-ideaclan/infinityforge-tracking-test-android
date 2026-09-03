@@ -22,10 +22,10 @@ class FakePreferencesDataSource : PreferencesDataSource {
         booleans.map { it[key] ?: default }
 
     override suspend fun setString(key: Preferences.Key<String>, value: String) {
-        strings.value = strings.value + (key to value)
+        strings.value = strings.value + Pair(key, value)
     }
 
     override suspend fun setBoolean(key: Preferences.Key<Boolean>, value: Boolean) {
-        booleans.value = booleans.value + (key to value)
+        booleans.value = booleans.value + Pair(key, value)
     }
 }

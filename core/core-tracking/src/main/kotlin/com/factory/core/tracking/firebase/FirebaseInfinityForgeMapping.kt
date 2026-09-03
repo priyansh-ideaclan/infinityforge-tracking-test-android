@@ -1,7 +1,6 @@
 package com.factory.core.tracking.firebase
 
 import com.factory.core.tracking.InfinityForgeDimensionValue
-import com.factory.core.tracking.InfinityForgeEventEnvelope
 import com.factory.core.tracking.InfinityForgeMetricEnvelope
 import com.factory.core.tracking.InfinityForgeMetricUnit
 import com.factory.core.tracking.InfinityForgePropertyValue
@@ -42,10 +41,6 @@ object FirebaseInfinityForgeMapping {
 
     fun truncate(value: String, maxLength: Int): String = if (value.length > maxLength) value.take(maxLength) else value
 
-    fun sanitizeEventName(name: String): String = truncate(disambiguate(name), EVENT_NAME_MAX_LENGTH)
-
-    fun sanitizeParamName(name: String): String = truncate(disambiguate(name), PARAM_NAME_MAX_LENGTH)
-
     /** Firebase event/screen parameters only accept string or number values — no
      * native boolean, object, or array parameter type. A Firebase-specific
      * limitation, not a contract one: the contract itself
@@ -77,50 +72,7 @@ object FirebaseInfinityForgeMapping {
 
     data class MappedEvent(val name: String, val params: Map<String, Any>, val dropped: List<String>)
 
-    /** Maps one non-screen event envelope onto a Firebase `logEvent()` call. Only
-     * `properties` plus three small, fixed traceability parameters cross onto the
-     * wire: `schema_version` (lets a downstream export distinguish which version of
-     * an event's shape produced a row), `environment` (lets a shared Firebase project
-     * filter development/preview noise from production analysis), and
-     * `infinityforge_anonymous_id` (this contract's `anonymous_id` is a distinct
-     * concept from Firebase's own auto-generated App Instance ID — see
-     * `FirebaseInfinityForgeProvider`'s identity-mapping notes — and has no other home
-     * in Firebase's data model). NOT forwarded: `timestamp`/`app_id`/`app_version`/
-     * `platform`/`sdk_name`/`sdk_version` (Firebase's own SDK already attaches these
-     * to every event it logs), `event` (becomes the Firebase event name itself),
-     * `user_id`/`anonymous_id` beyond the one traceability parameter (`user_id`
-     * reaches Firebase via `setUserId`). */
-    fun mapEvent(envelope: InfinityForgeEventEnvelope): MappedEvent {
-        val params = linkedMapOf<String, Any>(
-            "schema_version" to envelope.schemaVersion,
-            "environment" to envelope.environment.wireValue,
-            "infinityforge_anonymous_id" to truncate(envelope.anonymousId, PARAM_VALUE_MAX_LENGTH),
-        )
-        val entries = envelope.properties.entries.sortedBy { it.key }
-        val remainingBudget = (MAX_EVENT_PARAMS - params.size).coerceAtLeast(0)
-        val kept = entries.take(remainingBudget)
-        val dropped = entries.drop(remainingBudget).map { it.key }
-        for ((key, value) in kept) {
-            params[sanitizeParamName(key)] = toFirebaseParamValue(value)
-        }
-        return MappedEvent(sanitizeEventName(envelope.event), params, dropped)
-    }
-
     data class MappedScreenView(val screenName: String, val screenClass: String)
-
-    /** Maps a `screen_viewed` envelope onto Firebase's reserved `screen_view`
-     * event/parameters rather than a generic custom event — this is what populates
-     * Firebase's built-in Screens/Realtime reports. `screen_class` has no equivalent
-     * concept in this contract (screen-tracking.md defines only `screen_name`), so it
-     * is set to the same value — a conservative choice that keeps Firebase's reports
-     * populated without inventing meaning the contract doesn't define. Only
-     * `screen_name` crosses onto this call; `previous_screen` and any other
-     * app-specific screen properties are not forwarded here. */
-    fun mapScreenView(envelope: InfinityForgeEventEnvelope): MappedScreenView {
-        val screenName = (envelope.properties["screen_name"] as? InfinityForgePropertyValue.StringValue)?.value ?: ""
-        val sanitized = truncate(screenName, PARAM_VALUE_MAX_LENGTH)
-        return MappedScreenView(sanitized, sanitized)
-    }
 
     // -- Metrics -> Firebase Analytics mapping --
     //
@@ -174,12 +126,6 @@ object FirebaseInfinityForgeMapping {
         is InfinityForgeDimensionValue.IntValue -> value.value
         is InfinityForgeDimensionValue.BooleanValue -> if (value.value) "true" else "false"
     }
-
-    /** Firebase's `setUserId` accepts up to 256 characters. This contract's own
-     * `user_id` is an opaque, application-controlled identifier with no documented
-     * length ceiling, so truncation here is a defensive fallback for a pathological
-     * input, not an expected path. */
-    fun sanitizeUserId(userId: String): String = truncate(userId, USER_ID_MAX_LENGTH)
 
     data class MappedUserProperties(val properties: Map<String, String>, val dropped: List<String>)
 

@@ -53,13 +53,13 @@ class NoOpInfinityForgeTrackingClient(
 ) : InfinityForgeTrackingClient {
     override val providerNames: List<String> = emptyList()
 
-    override suspend fun initialize() {}
-    override fun track(event: InfinityForgeEvent) {}
-    override fun identify(userId: String) {}
-    override fun setUserProperties(properties: Map<String, InfinityForgePropertyValue>) {}
-    override fun screen(screenName: String, properties: Map<String, InfinityForgePropertyValue>) {}
-    override fun reset() {}
-    override fun recordMetric(metric: InfinityForgeMetric) {}
+    override suspend fun initialize() = Unit
+    override fun track(event: InfinityForgeEvent) = Unit
+    override fun identify(userId: String) = Unit
+    override fun setUserProperties(properties: Map<String, InfinityForgePropertyValue>) = Unit
+    override fun screen(screenName: String, properties: Map<String, InfinityForgePropertyValue>) = Unit
+    override fun reset() = Unit
+    override fun recordMetric(metric: InfinityForgeMetric) = Unit
 }
 
 /**

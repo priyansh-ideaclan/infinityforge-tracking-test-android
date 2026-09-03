@@ -49,7 +49,11 @@ class InfinityForgeTrackingProviderTest {
         val healthy = RecordingProvider("healthy")
 
         InfinityForgeDispatcher.dispatch(
-            scope, listOf(failing, healthy), "send", logger, InfinityForgeEnvironment.DEVELOPMENT,
+            scope,
+            listOf(failing, healthy),
+            "send",
+            logger,
+            InfinityForgeEnvironment.DEVELOPMENT,
         ) { it.send(sampleEnvelope()) }
         advanceUntilIdle()
 
@@ -65,7 +69,11 @@ class InfinityForgeTrackingProviderTest {
 
         // Must not throw.
         InfinityForgeDispatcher.dispatch(
-            scope, listOf(failing), "send", logger, InfinityForgeEnvironment.DEVELOPMENT,
+            scope,
+            listOf(failing),
+            "send",
+            logger,
+            InfinityForgeEnvironment.DEVELOPMENT,
         ) { it.send(sampleEnvelope()) }
         advanceUntilIdle()
 
@@ -80,7 +88,11 @@ class InfinityForgeTrackingProviderTest {
         val failing = FailingProvider("failing", RuntimeException("super secret detail"))
 
         InfinityForgeDispatcher.dispatch(
-            scope, listOf(failing), "send", logger, InfinityForgeEnvironment.PRODUCTION,
+            scope,
+            listOf(failing),
+            "send",
+            logger,
+            InfinityForgeEnvironment.PRODUCTION,
         ) { it.send(sampleEnvelope()) }
         advanceUntilIdle()
 

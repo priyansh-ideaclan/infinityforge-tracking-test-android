@@ -5,7 +5,6 @@ import com.factory.core.datastore.PreferenceKeys
 import com.factory.core.testing.FakeDispatcherProvider
 import com.factory.core.testing.FakeIdGenerator
 import com.factory.core.testing.FakePreferencesDataSource
-import java.util.concurrent.CountDownLatch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -15,6 +14,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import java.util.concurrent.CountDownLatch
 
 class InfinityForgeIdentityTest {
 
@@ -205,7 +205,10 @@ class InfinityForgeIdentityTest {
         repeat(30) { trial ->
             val store = FakePreferencesDataSource()
             val identity = InfinityForgeIdentity(
-                store, FakeIdGenerator(prefix = "id"), realDispatchers, RecordingLogger(),
+                store,
+                FakeIdGenerator(prefix = "id"),
+                realDispatchers,
+                RecordingLogger(),
             )
 
             runConcurrently(
@@ -244,7 +247,10 @@ class InfinityForgeIdentityTest {
         repeat(30) { trial ->
             val store = FakePreferencesDataSource()
             val identity = InfinityForgeIdentity(
-                store, FakeIdGenerator(prefix = "id"), realDispatchers, RecordingLogger(),
+                store,
+                FakeIdGenerator(prefix = "id"),
+                realDispatchers,
+                RecordingLogger(),
             )
 
             runConcurrently(

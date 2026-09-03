@@ -18,7 +18,10 @@ class InfinityForgeMetricValidationTest {
     fun `every canonical metric factory produces a valid recordMetric call`() {
         val metrics = listOf(
             InfinityForgeMetric.revenue(
-                9.99, "USD", InfinityForgeTransactionType.CHARGE, InfinityForgeBillingType.SUBSCRIPTION,
+                9.99,
+                "USD",
+                InfinityForgeTransactionType.CHARGE,
+                InfinityForgeBillingType.SUBSCRIPTION,
             ),
             InfinityForgeMetric.adImpression(placement = "home_banner", adFormat = InfinityForgeAdFormat.BANNER),
             InfinityForgeMetric.adRevenue(0.01, "USD", precision = InfinityForgeAdRevenuePrecision.ESTIMATED),
@@ -32,7 +35,8 @@ class InfinityForgeMetricValidationTest {
                 outcome = InfinityForgeOperationOutcome.SUCCESS,
             ),
             InfinityForgeMetric.handledError(
-                category = InfinityForgeHandledErrorCategory.OPERATIONAL_FAILURE, errorCode = "E_TIMEOUT",
+                category = InfinityForgeHandledErrorCategory.OPERATIONAL_FAILURE,
+                errorCode = "E_TIMEOUT",
             ),
         )
         for (metric in metrics) {
@@ -46,7 +50,9 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `ad_impression with wrong unit is rejected`() {
         val metric = InfinityForgeMetric.custom(
-            name = "ad_impression", value = 1.0, unit = InfinityForgeMetricUnit.COUNT,
+            name = "ad_impression",
+            value = 1.0,
+            unit = InfinityForgeMetricUnit.COUNT,
             source = InfinityForgeMetricSource.ADVERTISING_SYSTEM,
         )
         val result = InfinityForgeMetricValidation.validateRecordMetricCall(metric)
@@ -57,7 +63,9 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `handled_error value must equal the fixed value of 1`() {
         val metric = InfinityForgeMetric.custom(
-            name = "handled_error", value = 5.0, unit = InfinityForgeMetricUnit.COUNT,
+            name = "handled_error",
+            value = 5.0,
+            unit = InfinityForgeMetricUnit.COUNT,
             source = InfinityForgeMetricSource.APPLICATION,
             dimensions = mapOf("category" to InfinityForgeDimensionValue.StringValue("recoverable_error")),
         )
@@ -71,7 +79,10 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `revenue missing required transaction_type dimension is rejected`() {
         val metric = InfinityForgeMetric.custom(
-            name = "revenue", value = 9.99, unit = InfinityForgeMetricUnit.CURRENCY, currency = "USD",
+            name = "revenue",
+            value = 9.99,
+            unit = InfinityForgeMetricUnit.CURRENCY,
+            currency = "USD",
             source = InfinityForgeMetricSource.BILLING_SYSTEM,
         )
         val result = InfinityForgeMetricValidation.validateRecordMetricCall(metric)
@@ -82,7 +93,9 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `screen_load_duration missing required screen_name dimension is rejected`() {
         val metric = InfinityForgeMetric.custom(
-            name = "screen_load_duration", value = 50.0, unit = InfinityForgeMetricUnit.MILLISECOND,
+            name = "screen_load_duration",
+            value = 50.0,
+            unit = InfinityForgeMetricUnit.MILLISECOND,
             source = InfinityForgeMetricSource.APPLICATION,
         )
         val result = InfinityForgeMetricValidation.validateRecordMetricCall(metric)
@@ -94,7 +107,9 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `currency required when unit is currency`() {
         val metric = InfinityForgeMetric.custom(
-            name = "custom_revenue_like", value = 5.0, unit = InfinityForgeMetricUnit.CURRENCY,
+            name = "custom_revenue_like",
+            value = 5.0,
+            unit = InfinityForgeMetricUnit.CURRENCY,
             source = InfinityForgeMetricSource.BILLING_SYSTEM,
         )
         val result = InfinityForgeMetricValidation.validateRecordMetricCall(metric)
@@ -105,7 +120,10 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `currency forbidden when unit is not currency`() {
         val metric = InfinityForgeMetric.custom(
-            name = "custom_count", value = 1.0, unit = InfinityForgeMetricUnit.COUNT, currency = "USD",
+            name = "custom_count",
+            value = 1.0,
+            unit = InfinityForgeMetricUnit.COUNT,
+            currency = "USD",
             source = InfinityForgeMetricSource.APPLICATION,
         )
         val result = InfinityForgeMetricValidation.validateRecordMetricCall(metric)
@@ -116,7 +134,10 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `lowercase currency code is rejected`() {
         val metric = InfinityForgeMetric.custom(
-            name = "custom_revenue_like", value = 5.0, unit = InfinityForgeMetricUnit.CURRENCY, currency = "usd",
+            name = "custom_revenue_like",
+            value = 5.0,
+            unit = InfinityForgeMetricUnit.CURRENCY,
+            currency = "usd",
             source = InfinityForgeMetricSource.BILLING_SYSTEM,
         )
         assertFalse(InfinityForgeMetricValidation.validateRecordMetricCall(metric).isValid)
@@ -127,7 +148,9 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `negative value is rejected`() {
         val metric = InfinityForgeMetric.custom(
-            name = "custom_count", value = -1.0, unit = InfinityForgeMetricUnit.COUNT,
+            name = "custom_count",
+            value = -1.0,
+            unit = InfinityForgeMetricUnit.COUNT,
             source = InfinityForgeMetricSource.APPLICATION,
         )
         assertFalse(InfinityForgeMetricValidation.validateRecordMetricCall(metric).isValid)
@@ -136,7 +159,9 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `non-finite value is rejected`() {
         val metric = InfinityForgeMetric.custom(
-            name = "custom_count", value = Double.NaN, unit = InfinityForgeMetricUnit.COUNT,
+            name = "custom_count",
+            value = Double.NaN,
+            unit = InfinityForgeMetricUnit.COUNT,
             source = InfinityForgeMetricSource.APPLICATION,
         )
         assertFalse(InfinityForgeMetricValidation.validateRecordMetricCall(metric).isValid)
@@ -147,7 +172,9 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `app-specific metric is valid and flagged non-canonical`() {
         val metric = InfinityForgeMetric.custom(
-            name = "custom_count", value = 1.0, unit = InfinityForgeMetricUnit.COUNT,
+            name = "custom_count",
+            value = 1.0,
+            unit = InfinityForgeMetricUnit.COUNT,
             source = InfinityForgeMetricSource.APPLICATION,
         )
         assertTrue(InfinityForgeMetricValidation.validateRecordMetricCall(metric).isValid)
@@ -179,7 +206,9 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `dimension colliding with a reserved envelope field is rejected`() {
         val metric = InfinityForgeMetric.custom(
-            name = "custom_count", value = 1.0, unit = InfinityForgeMetricUnit.COUNT,
+            name = "custom_count",
+            value = 1.0,
+            unit = InfinityForgeMetricUnit.COUNT,
             source = InfinityForgeMetricSource.APPLICATION,
             dimensions = mapOf("value" to InfinityForgeDimensionValue.IntValue(1)),
         )
@@ -189,7 +218,9 @@ class InfinityForgeMetricValidationTest {
     @Test
     fun `non snake_case dimension key is rejected`() {
         val metric = InfinityForgeMetric.custom(
-            name = "custom_count", value = 1.0, unit = InfinityForgeMetricUnit.COUNT,
+            name = "custom_count",
+            value = 1.0,
+            unit = InfinityForgeMetricUnit.COUNT,
             source = InfinityForgeMetricSource.APPLICATION,
             dimensions = mapOf("BadKey" to InfinityForgeDimensionValue.IntValue(1)),
         )

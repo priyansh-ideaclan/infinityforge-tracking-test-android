@@ -30,12 +30,19 @@ class InfinityForgeEventValidationTest {
             InfinityForgeEvent.paywallViewed(placement = "home"),
             InfinityForgeEvent.trialStarted(plan = "pro", trialLengthDays = 7),
             InfinityForgeEvent.subscriptionStarted(
-                plan = "pro", price = 9.99, currency = "USD",
-                billingCycle = InfinityForgeBillingCycle.MONTHLY, transactionId = "txn_1",
+                plan = "pro",
+                price = 9.99,
+                currency = "USD",
+                billingCycle = InfinityForgeBillingCycle.MONTHLY,
+                transactionId = "txn_1",
             ),
             InfinityForgeEvent.subscriptionCancelled(plan = "pro", transactionId = "txn_1"),
             InfinityForgeEvent.purchaseCompleted(
-                productId = "sku_1", price = 4.99, currency = "USD", quantity = 1, transactionId = "txn_2",
+                productId = "sku_1",
+                price = 4.99,
+                currency = "USD",
+                quantity = 1,
+                transactionId = "txn_2",
             ),
         )
         for (event in events) {

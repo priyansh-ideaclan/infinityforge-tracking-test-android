@@ -133,9 +133,12 @@ class InfinityForgeTrackingClientImplTest {
         advanceUntilIdle()
 
         assertEquals(3, provider.sentEvents.size)
-        assertEquals("settings", provider.sentEvents[2].properties["previous_screen"]?.let {
-            (it as InfinityForgePropertyValue.StringValue).value
-        })
+        assertEquals(
+            "settings",
+            provider.sentEvents[2].properties["previous_screen"]?.let {
+                (it as InfinityForgePropertyValue.StringValue).value
+            },
+        )
     }
 
     @Test
@@ -176,7 +179,10 @@ class InfinityForgeTrackingClientImplTest {
     fun `an invalid metric is dropped before reaching a provider`() = runTest {
         client.recordMetric(
             InfinityForgeMetric.custom(
-                name = "revenue", value = -1.0, unit = InfinityForgeMetricUnit.CURRENCY, currency = "USD",
+                name = "revenue",
+                value = -1.0,
+                unit = InfinityForgeMetricUnit.CURRENCY,
+                currency = "USD",
                 source = InfinityForgeMetricSource.BILLING_SYSTEM,
             ),
         )

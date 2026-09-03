@@ -38,8 +38,15 @@ data class InfinityForgeMetric internal constructor(
                 productId?.let { put("product_id", InfinityForgeDimensionValue.StringValue(it)) }
             }
             return InfinityForgeMetric(
-                "revenue", 1, value, InfinityForgeMetricUnit.CURRENCY, currency, source, referenceId,
-                dimensions, isCanonical = true,
+                "revenue",
+                1,
+                value,
+                InfinityForgeMetricUnit.CURRENCY,
+                currency,
+                source,
+                referenceId,
+                dimensions,
+                isCanonical = true,
             )
         }
 
@@ -61,8 +68,15 @@ data class InfinityForgeMetric internal constructor(
                 network?.let { put("network", InfinityForgeDimensionValue.StringValue(it)) }
             }
             return InfinityForgeMetric(
-                "ad_impression", 1, 1.0, InfinityForgeMetricUnit.IMPRESSION, null, source, referenceId,
-                dimensions, isCanonical = true,
+                "ad_impression",
+                1,
+                1.0,
+                InfinityForgeMetricUnit.IMPRESSION,
+                null,
+                source,
+                referenceId,
+                dimensions,
+                isCanonical = true,
             )
         }
 
@@ -83,8 +97,15 @@ data class InfinityForgeMetric internal constructor(
                 precision?.let { put("precision", InfinityForgeDimensionValue.StringValue(it.wireValue)) }
             }
             return InfinityForgeMetric(
-                "ad_revenue", 1, value, InfinityForgeMetricUnit.CURRENCY, currency, source, referenceId,
-                dimensions, isCanonical = true,
+                "ad_revenue",
+                1,
+                value,
+                InfinityForgeMetricUnit.CURRENCY,
+                currency,
+                source,
+                referenceId,
+                dimensions,
+                isCanonical = true,
             )
         }
 
@@ -95,8 +116,15 @@ data class InfinityForgeMetric internal constructor(
             source: InfinityForgeMetricSource = InfinityForgeMetricSource.APPLICATION,
             referenceId: String? = null,
         ): InfinityForgeMetric = InfinityForgeMetric(
-            "session_duration", 1, seconds, InfinityForgeMetricUnit.SECOND, null, source, referenceId,
-            emptyMap(), isCanonical = true,
+            "session_duration",
+            1,
+            seconds,
+            InfinityForgeMetricUnit.SECOND,
+            null,
+            source,
+            referenceId,
+            emptyMap(),
+            isCanonical = true,
         )
 
         // -- Performance --
@@ -111,8 +139,15 @@ data class InfinityForgeMetric internal constructor(
                 launchType?.let { put("launch_type", InfinityForgeDimensionValue.StringValue(it.wireValue)) }
             }
             return InfinityForgeMetric(
-                "app_launch_duration", 1, milliseconds, InfinityForgeMetricUnit.MILLISECOND, null, source,
-                referenceId, dimensions, isCanonical = true,
+                "app_launch_duration",
+                1,
+                milliseconds,
+                InfinityForgeMetricUnit.MILLISECOND,
+                null,
+                source,
+                referenceId,
+                dimensions,
+                isCanonical = true,
             )
         }
 
@@ -122,7 +157,12 @@ data class InfinityForgeMetric internal constructor(
             source: InfinityForgeMetricSource = InfinityForgeMetricSource.APPLICATION,
             referenceId: String? = null,
         ): InfinityForgeMetric = InfinityForgeMetric(
-            "screen_load_duration", 1, milliseconds, InfinityForgeMetricUnit.MILLISECOND, null, source,
+            "screen_load_duration",
+            1,
+            milliseconds,
+            InfinityForgeMetricUnit.MILLISECOND,
+            null,
+            source,
             referenceId,
             mapOf("screen_name" to InfinityForgeDimensionValue.StringValue(screenName)),
             isCanonical = true,
@@ -144,8 +184,15 @@ data class InfinityForgeMetric internal constructor(
                 outcome?.let { put("outcome", InfinityForgeDimensionValue.StringValue(it.wireValue)) }
             }
             return InfinityForgeMetric(
-                "operation_duration", 1, milliseconds, InfinityForgeMetricUnit.MILLISECOND, null, source,
-                referenceId, dimensions, isCanonical = true,
+                "operation_duration",
+                1,
+                milliseconds,
+                InfinityForgeMetricUnit.MILLISECOND,
+                null,
+                source,
+                referenceId,
+                dimensions,
+                isCanonical = true,
             )
         }
 
@@ -164,8 +211,15 @@ data class InfinityForgeMetric internal constructor(
                 errorCode?.let { put("error_code", InfinityForgeDimensionValue.StringValue(it)) }
             }
             return InfinityForgeMetric(
-                "handled_error", 1, 1.0, InfinityForgeMetricUnit.COUNT, null, source, referenceId,
-                dimensions, isCanonical = true,
+                "handled_error",
+                1,
+                1.0,
+                InfinityForgeMetricUnit.COUNT,
+                null,
+                source,
+                referenceId,
+                dimensions,
+                isCanonical = true,
             )
         }
 
@@ -186,8 +240,15 @@ data class InfinityForgeMetric internal constructor(
             referenceId: String? = null,
             dimensions: Map<String, InfinityForgeDimensionValue> = emptyMap(),
         ): InfinityForgeMetric = InfinityForgeMetric(
-            name, InfinityForgeAppSpecificSchemaVersions.metric(name), value, unit, currency, source,
-            referenceId, dimensions, isCanonical = false,
+            name,
+            InfinityForgeAppSpecificSchemaVersions.metric(name),
+            value,
+            unit,
+            currency,
+            source,
+            referenceId,
+            dimensions,
+            isCanonical = false,
         )
     }
 }

@@ -24,26 +24,26 @@ interface InfinityForgeTrackingProvider {
     val name: String
 
     /** Called once, from `InfinityForgeTrackingClient.initialize()`. */
-    suspend fun initialize() {}
+    suspend fun initialize() = Unit
 
     /** One event envelope per `track()`/`screen()` call — the only method every
      * provider must implement. */
     suspend fun send(envelope: InfinityForgeEventEnvelope)
 
     /** One metric envelope per `recordMetric()` call. */
-    suspend fun recordMetric(envelope: InfinityForgeMetricEnvelope) {}
+    suspend fun recordMetric(envelope: InfinityForgeMetricEnvelope) = Unit
 
     /** Mirrors `identify()` — called only after this adapter's own
      * validation/identity-store update already succeeded. */
-    suspend fun identify(userId: String) {}
+    suspend fun identify(userId: String) = Unit
 
     /** Mirrors `setUserProperties()` — called only after this adapter's own
      * validation/identity-store update already succeeded. */
-    suspend fun setUserProperties(properties: Map<String, InfinityForgePropertyValue>) {}
+    suspend fun setUserProperties(properties: Map<String, InfinityForgePropertyValue>) = Unit
 
     /** Mirrors `reset()` — called after this adapter's own identity store has already
      * been cleared. */
-    suspend fun reset() {}
+    suspend fun reset() = Unit
 }
 
 /**
@@ -71,7 +71,14 @@ object InfinityForgeDispatcher {
                     // errors.md's "Provider failures must be isolated" is about a
                     // provider's own errors, not this scope being torn down).
                     throw cancellation
-                } catch (error: Exception) {
+                } catch (@Suppress("TooGenericExceptionCaught") error: Exception) {
+                    // Deliberately broad: this is the one place specification/errors.md's
+                    // "Provider failures must be isolated" is enforced, and a provider is
+                    // arbitrary vendor/third-party code (Firebase SDK today, any future
+                    // provider) that can throw literally any Exception subtype — there is
+                    // no narrower type that still satisfies "isolate any provider failure."
+                    // AGENTS.md §8 sanctions exactly this: a narrow, commented suppression
+                    // at the call site over a blanket rule disable or baseline.
                     logProviderFailure(provider, operation, error, logger, environment)
                 }
             }

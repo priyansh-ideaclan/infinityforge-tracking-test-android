@@ -2,14 +2,14 @@ package com.ideaclan.infinityforgetrackingtestkotlin.di
 
 import com.factory.ads.admob.IsDebugBuild
 import com.factory.ads.admob.ProductionAdUnitIds
-import com.ideaclan.infinityforgetrackingtestkotlin.AppSpecFlags
-import com.ideaclan.infinityforgetrackingtestkotlin.BuildConfig
 import com.factory.core.common.EnvironmentConfig
 import com.factory.core.common.FeatureFlag
 import com.factory.core.common.FeatureFlagProvider
 import com.factory.core.database.DatabaseName
 import com.factory.feature.auth.di.GoogleWebClientId
 import com.factory.purchases.revenuecat.PremiumEntitlementId
+import com.ideaclan.infinityforgetrackingtestkotlin.AppSpecFlags
+import com.ideaclan.infinityforgetrackingtestkotlin.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

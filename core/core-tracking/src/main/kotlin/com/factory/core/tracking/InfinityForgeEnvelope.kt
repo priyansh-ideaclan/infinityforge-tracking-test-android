@@ -123,13 +123,37 @@ data class InfinityForgeMetricEnvelope(
  * specification/conventions.md and specification/metric-envelope.md. */
 object InfinityForgeReservedFields {
     val event: Set<String> = setOf(
-        "event", "schema_version", "timestamp", "app_id", "environment", "platform",
-        "sdk_version", "sdk_name", "app_version", "user_id", "anonymous_id", "properties",
+        "event",
+        "schema_version",
+        "timestamp",
+        "app_id",
+        "environment",
+        "platform",
+        "sdk_version",
+        "sdk_name",
+        "app_version",
+        "user_id",
+        "anonymous_id",
+        "properties",
     )
 
     val metric: Set<String> = setOf(
-        "metric_name", "schema_version", "value", "unit", "currency", "source", "reference_id",
-        "timestamp", "app_id", "environment", "platform", "sdk_version", "sdk_name",
-        "app_version", "user_id", "anonymous_id", "dimensions",
+        "metric_name",
+        "schema_version",
+        "value",
+        "unit",
+        "currency",
+        "source",
+        "reference_id",
+        "timestamp",
+        "app_id",
+        "environment",
+        "platform",
+        "sdk_version",
+        "sdk_name",
+        "app_version",
+        "user_id",
+        "anonymous_id",
+        "dimensions",
     )
 }

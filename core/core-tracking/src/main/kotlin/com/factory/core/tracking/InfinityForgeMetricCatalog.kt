@@ -1,6 +1,6 @@
 package com.factory.core.tracking
 
-/** Dimension-only enum values — mirrors metrics/*.yaml's `allowed_values` lists
+/** Dimension-only enum values — mirrors metrics/ *.yaml's `allowed_values` lists
  * exactly. [InfinityForgeLaunchType] (app_launch_duration) is shared with the event
  * catalog's identical `launch_type` semantics. */
 enum class InfinityForgeTransactionType(val wireValue: String) {
@@ -41,8 +41,14 @@ object InfinityForgeMetricCatalog {
     data class DimensionSpec(val kind: Kind, val required: Boolean)
 
     val schemaVersions: Map<String, Int> = mapOf(
-        "revenue" to 1, "ad_impression" to 1, "ad_revenue" to 1, "session_duration" to 1,
-        "app_launch_duration" to 1, "screen_load_duration" to 1, "operation_duration" to 1, "handled_error" to 1,
+        "revenue" to 1,
+        "ad_impression" to 1,
+        "ad_revenue" to 1,
+        "session_duration" to 1,
+        "app_launch_duration" to 1,
+        "screen_load_duration" to 1,
+        "operation_duration" to 1,
+        "handled_error" to 1,
     )
 
     val units: Map<String, InfinityForgeMetricUnit> = mapOf(
