@@ -24,11 +24,40 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />
 
+        <!--
+          InfinityForge Tracking (Docs/INFINITYFORGE_TRACKING.md) is this app's single
+          source of screen-view events (FactoryNavHost's NavController listener) —
+          Firebase's own automatic screen_view logging must stay off so a real
+          navigation event is never reported twice under two different mechanisms.
+        -->
+        <meta-data
+            android:name="google_analytics_automatic_screen_reporting_enabled"
+            android:value="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Factory"
             android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+          Developer-only validation screen for InfinityForge Tracking
+          (Docs/INFINITYFORGE_TRACKING.md) — this app's whole purpose. Given its own
+          launcher entry (a second, separate icon) rather than being wired into
+          Settings/Home, since those live in feature-* modules that must not depend on
+          `app` (AGENTS.md's module-dependency direction) and this screen is a
+          validation surface, not a product feature.
+        -->
+        <activity
+            android:name=".trackingtest.TrackingTestActivity"
+            android:exported="true"
+            android:label="Tracking Test"
+            android:theme="@style/Theme.Factory">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

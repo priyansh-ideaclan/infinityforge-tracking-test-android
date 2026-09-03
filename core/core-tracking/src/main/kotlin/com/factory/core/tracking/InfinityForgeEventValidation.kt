@@ -47,6 +47,7 @@ object InfinityForgeEventValidation {
             issues += "event name \"$eventName\" is not snake_case (specification/conventions.md)"
         }
         issues += reservedFieldCollisions(properties)
+        issues += nonSnakeCasePropertyKeys(properties)
         issues += priceCurrencyPairingIssues(eventName, properties)
         InfinityForgeEventCatalog.properties[eventName]?.let { spec ->
             issues += canonicalPropertyIssues(spec, properties)
@@ -93,6 +94,17 @@ object InfinityForgeEventValidation {
             .filter { InfinityForgeReservedFields.event.contains(it) }
             .sorted()
             .map { "property \"$it\" collides with a reserved envelope field name" }
+
+    /** specification/conventions.md: every property key must be snake_case, exactly
+     * like an event name (see [InfinityForgeIdentifierPattern]). Mirrors
+     * [InfinityForgeMetricValidation]'s existing `nonSnakeCaseDimensionKeys` check —
+     * this event-side counterpart was previously missing, so a badly-cased property
+     * key (canonical or app-specific) passed validation silently. */
+    private fun nonSnakeCasePropertyKeys(properties: Map<String, InfinityForgePropertyValue>): List<String> =
+        properties.keys
+            .filterNot { InfinityForgeIdentifierPattern.matches(it) }
+            .sorted()
+            .map { "property \"$it\" is not snake_case (specification/conventions.md)" }
 
     private fun priceCurrencyPairingIssues(
         eventName: String,

@@ -108,10 +108,26 @@ class InfinityForgeIdentity @Inject constructor(
         }
     }
 
-    /** No-ops on a blank `userId` rather than clearing identity — specification/api.md. */
+    /** No-ops on a blank `userId` rather than clearing identity — specification/api.md.
+     * Calling this with a *different* `userId` than the one already active, without an
+     * intervening `reset()`, is a misuse of the contract (specification/identity.md's
+     * "Account switching semantics" — the calling application should `reset()` then
+     * `identify()`). This adapter never crashes on it (it still overwrites `userId`,
+     * same as before), but now surfaces a development diagnostic so the misuse is
+     * visible rather than silent, matching the contract's "should log a development
+     * diagnostic" recommendation for this specific case. */
     fun identify(newUserId: String) {
         if (newUserId.isBlank()) return
         synchronized(stateLock) {
+            val previousUserId = userId
+            if (previousUserId != null && previousUserId != newUserId) {
+                logger.warn(
+                    TAG,
+                    "InfinityForge Tracking: identify() called with a different user_id " +
+                        "while one was already active. Call reset() before identify() when " +
+                        "switching accounts (specification/identity.md).",
+                )
+            }
             userId = newUserId
             persistInBackgroundLocked()
         }

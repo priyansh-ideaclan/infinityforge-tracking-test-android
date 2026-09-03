@@ -12,7 +12,9 @@ import androidx.navigation.compose.rememberNavController
 import com.factory.ads.api.BannerAdRenderer
 import com.factory.core.designsystem.component.FactoryLoadingIndicator
 import com.factory.core.designsystem.theme.FactoryTheme
+import com.factory.core.logging.Logger
 import com.factory.core.navigation.FactoryNavigator
+import com.factory.core.tracking.InfinityForgeTrackingClient
 import com.ideaclan.infinityforgetrackingtestkotlin.ui.FactoryNavHost
 import com.ideaclan.infinityforgetrackingtestkotlin.ui.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +26,10 @@ class MainActivity : ComponentActivity() {
     @Inject lateinit var navigator: FactoryNavigator
 
     @Inject lateinit var bannerAdRenderer: BannerAdRenderer
+
+    @Inject lateinit var trackingClient: InfinityForgeTrackingClient
+
+    @Inject lateinit var logger: Logger
 
     private val viewModel: MainActivityViewModel by viewModels()
 
@@ -44,6 +50,8 @@ class MainActivity : ComponentActivity() {
                         navigator = navigator,
                         startDestination = destination,
                         bannerAdRenderer = bannerAdRenderer,
+                        trackingClient = trackingClient,
+                        logger = logger,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }

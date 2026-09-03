@@ -28,4 +28,14 @@ sealed interface FactoryDestination {
 
     @Serializable
     data object ForgotPassword : FactoryDestination
+
+    // Test-app-only addition (infinityforge-tracking-test-android), not part of
+    // native-android-app-factory's production destination set — exists solely to
+    // exercise InfinityForge automatic screen tracking
+    // (core-navigation/InfinityForgeScreenTracking.kt) against a third, distinct
+    // screen beyond Home/Settings, proving the resolver needs no per-destination
+    // update: adding this one line is the only change required for "profile" to
+    // be automatically tracked.
+    @Serializable
+    data object Profile : FactoryDestination
 }

@@ -83,8 +83,16 @@ contract's guarantees or force unrelated app-specific events through it.
   work outside "implement the reusable Kotlin Tracking core." `TrackingModule` always
   provides the real client; only the *provider list* varies (Firebase, debug-logging,
   or none).
-- **No Tracking test UI.** Nothing in `feature-*` calls `track()`/`identify()`/
-  `screen()`/`recordMetric()` yet — that is Phase 6C's job.
+- **Tracking test UI added (Phase 6C, later cross-platform conformance pass).**
+  `app/.../trackingtest/{TrackingTestActivity,TrackingTestScreen,TrackingTestViewModel}.kt`
+  — a separate, second launcher entry ("Tracking Test") rather than a screen inside
+  `feature-home`/`feature-settings`, since those modules must not depend on `app`
+  (this factory's module-dependency direction) and this is a validation surface, not
+  a product feature. Exercises every `InfinityForgeTrackingClient` operation
+  (track/screen/identify/setUserProperties/reset/recordMetric) plus two deliberate
+  failure drills (an invalid event, and a failing provider isolated from the real
+  Firebase provider) from the UI, mirroring the RN and Swift test apps' own Tracking
+  test screens.
 - **No real Firebase project.** `FirebaseInfinityForgeProvider` is implemented and
   unit-tested against pure mapping functions, but has never run against live
   credentials — see Docs/setup/firebase.md for what remains external, per-developer
