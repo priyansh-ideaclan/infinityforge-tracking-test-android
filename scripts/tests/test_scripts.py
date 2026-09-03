@@ -64,7 +64,10 @@ class ValidateSpecTest(unittest.TestCase):
         try:
             spec_path = sandbox / "APP_SPEC.yaml"
             text = spec_path.read_text(encoding="utf-8")
-            text = text.replace('package_name: "com.factory.app"', 'package_name: "NotValid"')
+            text = text.replace(
+                'package_name: "com.ideaclan.infinityforgetrackingtestkotlin"',
+                'package_name: "NotValid"',
+            )
             spec_path.write_text(text, encoding="utf-8")
 
             result = run_script(sandbox, "validate_spec.py", "APP_SPEC.yaml")
@@ -115,7 +118,7 @@ class ConfigureAppIdempotencyTest(unittest.TestCase):
         try:
             spec_path = sandbox / "APP_SPEC.yaml"
             text = spec_path.read_text(encoding="utf-8").replace(
-                'name: "Factory App"', 'name: ""',
+                'name: "InfinityForge Tracking Test"', 'name: ""',
             )
             spec_path.write_text(text, encoding="utf-8")
             before = (sandbox / "app" / "build.gradle.kts").read_text(encoding="utf-8")
