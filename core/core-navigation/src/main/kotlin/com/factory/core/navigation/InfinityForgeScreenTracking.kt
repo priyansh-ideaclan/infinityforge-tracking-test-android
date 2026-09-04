@@ -1,6 +1,7 @@
 package com.factory.core.navigation
 
 import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 
 /**
  * Resolves a navigated-to [NavDestination]'s stable, non-PII logical screen

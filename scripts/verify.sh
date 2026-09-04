@@ -12,10 +12,31 @@ set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 REPO_ROOT="$(pwd)"
 
-# Gradle/Android tooling needs these; a fresh non-interactive shell may not have them
-# sourced from the profile (see CLAUDE.md).
-export JAVA_HOME="${JAVA_HOME:-/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home}"
-export ANDROID_HOME="${ANDROID_HOME:-/opt/homebrew/share/android-commandlinetools}"
+unset ANDROID_PREFS_ROOT
+
+# Gradle/Android tooling needs these; detect dynamically if default/environment path is missing
+if [ -z "${JAVA_HOME:-}" ] || [ ! -d "$JAVA_HOME" ]; then
+    if [ -x /usr/libexec/java_home ]; then
+        JAVA_HOME="$(/usr/libexec/java_home 2>/dev/null || true)"
+    fi
+    if [ -z "$JAVA_HOME" ] || [ ! -d "$JAVA_HOME" ]; then
+        if [ -d "/Applications/Android Studio.app/Contents/jbr/Contents/Home" ]; then
+            JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
+        elif [ -d "/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home" ]; then
+            JAVA_HOME="/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home"
+        fi
+    fi
+fi
+export JAVA_HOME
+
+if [ -z "${ANDROID_HOME:-}" ] || [ ! -d "$ANDROID_HOME" ]; then
+    if [ -d "$HOME/Library/Android/sdk" ]; then
+        ANDROID_HOME="$HOME/Library/Android/sdk"
+    elif [ -d "/opt/homebrew/share/android-commandlinetools" ]; then
+        ANDROID_HOME="/opt/homebrew/share/android-commandlinetools"
+    fi
+fi
+export ANDROID_HOME
 
 PYTHON_BIN="${FACTORY_PYTHON:-python3}"
 

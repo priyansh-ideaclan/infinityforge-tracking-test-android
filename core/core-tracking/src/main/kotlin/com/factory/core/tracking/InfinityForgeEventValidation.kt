@@ -31,6 +31,7 @@ object InfinityForgeIdentifierPattern {
  * [InfinityForgeEventCatalog], the same registry [InfinityForgeEvent]'s factories are
  * built from.
  */
+@Suppress("TooManyFunctions")
 object InfinityForgeEventValidation {
     /** Validates a `track()`/`screen()` call. `eventName` may be a canonical event
      * (validated against its full property schema) or an app-specific event (only

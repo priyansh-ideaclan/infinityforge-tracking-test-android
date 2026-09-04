@@ -49,6 +49,7 @@ fun TrackingTestRoute(viewModel: TrackingTestViewModel = hiltViewModel()) {
     )
 }
 
+@Suppress("LongParameterList")
 @Composable
 fun TrackingTestScreen(
     availability: String,
@@ -103,7 +104,11 @@ fun TrackingTestScreen(
         Text(text = "Log", style = MaterialTheme.typography.titleMedium)
         LazyColumn(modifier = Modifier.fillMaxWidth()) {
             items(log) { entry ->
-                Text(text = entry, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(vertical = 4.dp))
+                Text(
+                    text = entry,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(vertical = 4.dp),
+                )
             }
         }
     }

@@ -42,7 +42,13 @@ fun ProfileTestScreen(navController: NavHostController) {
         Button(onClick = { navController.navigate(FactoryDestination.Profile) }) {
             Text("Reopen Profile (consecutive duplicate)")
         }
-        Button(onClick = { navController.navigate(FactoryDestination.Home) { popUpTo(FactoryDestination.Home) { inclusive = true } } }) {
+        Button(
+            onClick = {
+                navController.navigate(FactoryDestination.Home) {
+                    popUpTo(FactoryDestination.Home) { inclusive = true }
+                }
+            },
+        ) {
             Text("Back to Home")
         }
     }

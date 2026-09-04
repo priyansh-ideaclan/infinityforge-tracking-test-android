@@ -42,10 +42,10 @@ private class AlwaysFailingTrackingProvider : InfinityForgeTrackingProvider {
     override val name = "always_failing_test_provider"
 
     override suspend fun send(envelope: InfinityForgeEventEnvelope): Unit =
-        throw IllegalStateException("Deliberate test failure from AlwaysFailingTrackingProvider.send()")
+        error("Deliberate test failure from AlwaysFailingTrackingProvider.send()")
 
     override suspend fun recordMetric(envelope: InfinityForgeMetricEnvelope): Unit =
-        throw IllegalStateException("Deliberate test failure from AlwaysFailingTrackingProvider.recordMetric()")
+        error("Deliberate test failure from AlwaysFailingTrackingProvider.recordMetric()")
 }
 
 /**
@@ -103,7 +103,12 @@ class TrackingTestViewModel @Inject constructor(
 
     fun trackEvent() {
         val featureName = "tracking_test_button_${System.currentTimeMillis()}"
-        trackingClient.track(InfinityForgeEvent.custom("feature_used", mapOf("feature_name" to InfinityForgePropertyValue.StringValue(featureName))))
+        trackingClient.track(
+            InfinityForgeEvent.custom(
+                "feature_used",
+                mapOf("feature_name" to InfinityForgePropertyValue.StringValue(featureName)),
+            ),
+        )
         appendLog("track(feature_used) — feature_name=\"$featureName\"")
     }
 
@@ -111,7 +116,9 @@ class TrackingTestViewModel @Inject constructor(
         val screenName = screenSequence[screenSequenceIndex % screenSequence.size]
         screenSequenceIndex++
         trackingClient.screen(screenName)
-        appendLog("screen(\"$screenName\") — step ${screenSequenceIndex} of the Home/Home/Settings/Settings/Profile sequence")
+        appendLog(
+            "screen(\"$screenName\") — step $screenSequenceIndex of sequence",
+        )
     }
 
     fun identifyUser() {
@@ -123,7 +130,9 @@ class TrackingTestViewModel @Inject constructor(
 
     fun setUserProperty() {
         val value = "value_${System.currentTimeMillis()}"
-        trackingClient.setUserProperties(mapOf("tracking_test_property" to InfinityForgePropertyValue.StringValue(value)))
+        trackingClient.setUserProperties(
+            mapOf("tracking_test_property" to InfinityForgePropertyValue.StringValue(value)),
+        )
         appendLog("setUserProperties({tracking_test_property: \"$value\"})")
     }
 
